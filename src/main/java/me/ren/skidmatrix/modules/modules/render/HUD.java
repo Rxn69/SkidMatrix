@@ -87,9 +87,7 @@ public class HUD extends Module {
 
     @EventTarget
     private void render2D(Render2DEvent event) {
-        GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Consolas", 15, false, false, false);
-        FontRenderer fontRenderer2 = mc.fontRendererObj;
-        GlyphPageFontRenderer fontRenderer3 = GlyphPageFontRenderer.create("Consolas", 20, false, false, false);
+        FontRenderer fontRenderer = mc.fontRendererObj;
 
         if (!getState()) return;
 
@@ -98,30 +96,38 @@ public class HUD extends Module {
             fps.remove(0);
         }
 
-
-
         ScaledResolution res = new ScaledResolution(mc);
 
-        int blackBarHeight = fontRenderer2.FONT_HEIGHT * 2 + 4;
-
-
+        int blackBarHeight = fontRenderer.FONT_HEIGHT * 2 + 4;
 
         double currSpeed = Math.sqrt(mc.thePlayer.motionX * mc.thePlayer.motionX + mc.thePlayer.motionZ * mc.thePlayer.motionZ);
 
+        Gui.drawRect(2, 2 + fontRenderer.FONT_HEIGHT + 5, fontRenderer.getStringWidth("FPS: XXX") + 50, 4 + (fontRenderer.FONT_HEIGHT * 5) + 5, new Color(0, 0, 0, 60).getRGB());
 
+        fontRenderer.drawString(SkidMatrix.CLIENT_NAME + " " + SkidMatrix.CLIENT_VERSION, 4, 4, rainbow(200));
+
+        fontRenderer.drawString("FPS: "+ mc.getDebugFPS(), 4, 4 + fontRenderer.FONT_HEIGHT + 5, -1);
+        fontRenderer.drawString(String.format("BPS: %.2f", currSpeed * 2), 4, 4 + (fontRenderer.FONT_HEIGHT * 2) + 5, -1);
 
         LocalDateTime now = LocalDateTime.now();
         String date = dateFormat.format(now);
         String time = timeFormat.format(now);
+
+        fontRenderer.drawString(date , 4, 4 + (fontRenderer.FONT_HEIGHT * 4) + 5, -1);
+        fontRenderer.drawString(time , 4, 4 + (fontRenderer.FONT_HEIGHT * 5) + 5, -1);
+
+
+
 
 
         AtomicInteger offset = new AtomicInteger(3);
         AtomicInteger index = new AtomicInteger();
 
         SkidMatrix.INSTANCE.moduleManager.getModules().stream().filter(mod -> mod.getState() && !mod.isHidden()).sorted(Comparator.comparingInt(mod -> -fontRenderer.getStringWidth(mod.getName()))).forEach(mod -> {
-            fontRenderer.drawString(mod.getName(), res.getScaledWidth() - fontRenderer.getStringWidth(mod.getName()) - 3, offset.get(), rainbow(index.get() * 100), true);
+            Gui.drawRect(res.getScaledWidth() - fontRenderer.getStringWidth(mod.getName()) - 8, offset.get() - 4, res.getScaledWidth(), offset.get() + fontRenderer.FONT_HEIGHT + 2, new Color(0, 0, 0, 60).getRGB());
 
-            offset.addAndGet(fontRenderer2.FONT_HEIGHT + 2);
+            fontRenderer.drawString(mod.getName(), res.getScaledWidth() - fontRenderer.getStringWidth(mod.getName()) - 3, offset.get(), rainbow(index.get() * 100), false);
+            offset.addAndGet(fontRenderer.FONT_HEIGHT + 2);
             index.getAndIncrement();
         });
 
