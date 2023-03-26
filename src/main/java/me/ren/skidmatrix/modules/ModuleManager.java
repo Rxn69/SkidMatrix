@@ -16,15 +16,19 @@ import me.ren.skidmatrix.SkidMatrix;
 import me.ren.skidmatrix.events.KeyEvent;
 import me.ren.skidmatrix.modules.modules.fun.DemoModeModule;
 import me.ren.skidmatrix.modules.modules.movement.SetbackDetector;
+import me.ren.skidmatrix.modules.modules.player.Fullbright;
 import me.ren.skidmatrix.modules.modules.render.ClickGUIModule;
 import me.ren.skidmatrix.modules.modules.render.HUD;
 import me.ren.skidmatrix.scripting.ScriptModule;
+import me.ren.skidmatrix.valuesystem.BooleanValue;
+import me.ren.skidmatrix.valuesystem.ModeValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleManager {
+
 
     @NotNull
     private List<Module> modules = new ArrayList<>();
@@ -35,8 +39,11 @@ public class ModuleManager {
 
 
     public void addModules() {
-        addModule(new DemoModeModule());
+        // Move
         addModule(new SetbackDetector());
+
+        // Player
+        addModule(new Fullbright());
 
         // Register your modules here
 
